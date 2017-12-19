@@ -15,8 +15,11 @@ public:
     static const std::string ServiceName;
     static const std::string OperationName;
     IntrospectionService(RTT::TaskContext* owner = 0);
+    ~IntrospectionService();
     
 private:
+    RTT::Operation<TaskData ()> *_op;
+    RTT::TaskContext* _owner;
     TaskData getIntrospectionInformation();
 };
 

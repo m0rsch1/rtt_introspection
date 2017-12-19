@@ -26,8 +26,14 @@ const std::string IntrospectionService::OperationName = std::string("getIntrospe
 IntrospectionService::IntrospectionService(RTT::TaskContext* owner): Service(ServiceName, owner)
 {
     PluginHelper::loadTypekitAndTransports("rtt_introspection");
-    RTT::Operation<TaskData ()> *op = new RTT::Operation<TaskData ()>(OperationName, boost::bind(&IntrospectionService::getIntrospectionInformation, this));
-    owner->addOperation(*op);
+    _op = new RTT::Operation<TaskData ()>(OperationName, boost::bind(&IntrospectionService::getIntrospectionInformation, this));
+    owner->addOperation(*_op);
+    _owner = owner;
+}
+IntrospectionService::~IntrospectionService()
+{
+    // Here we have to make sure that the owner does not have _op anymore
+    _owner->operations()->remove(OperationName);
 }
 
 const char* get_process_name_by_pid(const int pid)
